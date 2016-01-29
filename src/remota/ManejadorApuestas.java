@@ -7,7 +7,6 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.*;
 import turf.*;
-import utilidad.GeneradordeConexiones;
 
 /**
  *
@@ -18,13 +17,15 @@ public class ManejadorApuestas {
     String usuarioBD;
     String claveBD;
     Connection conexion;
+    GeneradorConexiones conex;
 
     public ManejadorApuestas(String servidor, String usuarioBD, String claveBD) {
         this.servidor = servidor;
         this.usuarioBD = usuarioBD;
         this.claveBD = claveBD;
+        this.conex = new GeneradorConexiones();
         try {
-            conexion = GeneradordeConexiones.getConexion(servidor, usuarioBD, claveBD);
+            conexion = conex.getConexion(servidor, usuarioBD, claveBD);
         } catch (SQLException ex) {
             Logger.getLogger(ManejadorApuestas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -79,8 +80,8 @@ public class ManejadorApuestas {
                  Caballo c = new Caballo(rs.getInt("Id"),rs.getString("Nombre"));
                  participantes.add(c);
              }
-             GeneradordeConexiones.cerrar(rs);
-             GeneradordeConexiones.cerrar(sen);
+             rs.close();
+             sen.close();
         } catch (SQLException ex) {
             Logger.getLogger(ManejadorApuestas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -97,8 +98,8 @@ public class ManejadorApuestas {
             ResultSet rs = sen.executeQuery(sentencia);
             rs.next();
             total = rs.getFloat(1);
-            GeneradordeConexiones.cerrar(rs);
-            GeneradordeConexiones.cerrar(sen);
+            rs.close();
+            sen.close();
         } catch (SQLException ex) {
             Logger.getLogger(ManejadorApuestas.class.getName()).log(Level.SEVERE, null, ex);
         }        
@@ -114,8 +115,8 @@ public class ManejadorApuestas {
                  Carrera c = new Carrera(rs.getInt("Id"),rs.getString("Hipodromo"));
                  carrerasAbiertas.add(c);
              }
-             GeneradordeConexiones.cerrar(rs);
-             GeneradordeConexiones.cerrar(sen);
+             rs.close();
+             sen.close();
         } catch (SQLException ex) {
             Logger.getLogger(ManejadorApuestas.class.getName()).log(Level.SEVERE, null, ex);
         }
