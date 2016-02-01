@@ -3,6 +3,7 @@
  */
 package remota;
 
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.*;
@@ -12,7 +13,7 @@ import turf.*;
  *
  * @author Leo
  */
-public class ManejadorApuestas {
+public class ManejadorApuestas implements ApuestasInterface {
     String servidor;
     String usuarioBD;
     String claveBD;
@@ -40,7 +41,11 @@ public class ManejadorApuestas {
         }
         return clave;
     }
-    public int insertaApuesta(Apuesta a){
+    /* (non-Javadoc)
+	 * @see remota.ApuestasInterface#insertaApuesta(turf.Apuesta)
+	 */
+    @Override
+	public int insertaApuesta(Apuesta a) throws RemoteException {
         int id = 0;
 //        String sentencia = "EXECUTE dbo.grabaApuesta "+a.getIdCarrera()+","+a.getIdcaballo()+","+a.getImporte()+",'"+a.getClave()+"'";
         String sentencia = "EXECUTE dbo.grabaApuesta ?, ?, ?, ?, ?";
@@ -59,7 +64,11 @@ public class ManejadorApuestas {
         }
         return id;
     }
-    public Apuesta grabaApuesta (int idCarrera, int idCaballo, float importe){
+    /* (non-Javadoc)
+	 * @see remota.ApuestasInterface#grabaApuesta(int, int, float)
+	 */
+    @Override
+	public Apuesta grabaApuesta (int idCarrera, int idCaballo, float importe) throws RemoteException {
         Apuesta nuevaApuesta = new Apuesta ( idCaballo, idCarrera, importe);
         String clave = generaClave (nuevaApuesta);
         nuevaApuesta.setClave(clave);
@@ -70,7 +79,11 @@ public class ManejadorApuestas {
      /*
      Recibe el ID de una carrera nos devuelve una lista de los caballos inscritos en la misma
      */
-    public ArrayList<Caballo> obtenerParticipantes (int carrera){
+    /* (non-Javadoc)
+	 * @see remota.ApuestasInterface#obtenerParticipantes(int)
+	 */
+    @Override
+	public ArrayList<Caballo> obtenerParticipantes (int carrera) throws RemoteException {
         ArrayList<Caballo> participantes = new ArrayList();
         String sentencia = "SELECT C.Id, C.Nombre FROM LTCaballos AS C JOIN LTCaballosCarreras AS CC ON C.Id = CC.IDCaballo WHERE CC.IDCarrera = "+carrera;
         try {
@@ -90,7 +103,11 @@ public class ManejadorApuestas {
     /*
      Recibe el ID de una carrera y el de un caballo y nos devuelve la cantidad que hay apostada en ese momento
      */
-    public float obtenerApuestas (int carrera, int caballo){
+    /* (non-Javadoc)
+	 * @see remota.ApuestasInterface#obtenerApuestas(int, int)
+	 */
+    @Override
+	public float obtenerApuestas (int carrera, int caballo) throws RemoteException {
         float total=0.0f;
         String sentencia = "SELECT ISNULL(SUM(Importe),0) FROM LTApuestas WHERE IDCarrera = "+carrera+" AND IDCaballo = "+caballo;
         try {
@@ -105,7 +122,11 @@ public class ManejadorApuestas {
         }        
         return total;
     }
-    public ArrayList<Carrera> obtenerCarreras (){
+    /* (non-Javadoc)
+	 * @see remota.ApuestasInterface#obtenerCarreras()
+	 */
+    @Override
+	public ArrayList<Carrera> obtenerCarreras () throws RemoteException {
         ArrayList<Carrera> carrerasAbiertas = new ArrayList();
         String sentencia ="SELECT DISTINCT ID, Hipodromo FROM LTCarreras As C JOIN LTCaballosCarreras AS CC ON C.ID = CC.IDCarrera Where Fecha > GETDATE()";
         try {
