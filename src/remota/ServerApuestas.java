@@ -23,7 +23,11 @@ public class ServerApuestas {
             }
             System.out.println ("Creando el objeto servidor e instanciándolo en el registro");
             objetoServidor = new ManejadorApuestas("127.0.0.1","prueba","123");
-            reg.rebind("Calculadora", (ManejadorApuestas)UnicastRemoteObject.exportObject(objetoServidor,0));
+            reg.rebind("Apostando", (ApuestasInterface)UnicastRemoteObject.exportObject(objetoServidor,0));
+            
+            //Bucle infinito para que la ejecución se mantenga y
+            //no se pierda el registro del objeto remoto
+            while (true) {}
         } catch (RemoteException ex) {
             Logger.getLogger(ManejadorApuestas.class.getName()).log(Level.SEVERE, null, ex);
         }
