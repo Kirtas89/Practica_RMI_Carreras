@@ -21,7 +21,7 @@ public class GeneradorConexiones implements DataSource {
 	 * Postcondición: Se devuelve una conexión asociada al nombre.
 	 */
 	public Connection getConexion(String servidor, String usuario, String password) throws SQLException {
-		Connection conexion = DriverManager.getConnection("jdbc:sqlserver://" + servidor + ";user=" + usuario + ";password=" + password + ";");
+		Connection conexion = DriverManager.getConnection(servidor, usuario, password);
 		return conexion;
 	}
 
